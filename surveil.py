@@ -300,7 +300,7 @@ if __name__ == '__main__':
             with open("/home/pi/APP__surveillance/command.txt") as comfile:
                 comtext = comfile.read()
         except FileNotFoundError:
-            comtext = no comfile found
+            comtext = noComFileFound
             
         #
         # read command.txt file
