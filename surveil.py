@@ -308,7 +308,7 @@ if __name__ == '__main__':
         
         datafile="/home/pi/APP__surveillance/command.txt"
         try:
-            with open(datafile) as f: print("Checking if command.txt exists")
+            with open(datafile) as f: print("Success: command.txt found.)
         except IOError as e:
             print("Error: %s not found." % datafile)
         
