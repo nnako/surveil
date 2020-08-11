@@ -297,7 +297,7 @@ if __name__ == '__main__':
         #
         
         try:
-            with open(/home/pi/APP__surveillance/"command.txt") as comfile:
+            with open("/home/pi/APP__surveillance/command.txt") as comfile:
                 comtext = comfile.read()
         except FileNotFoundError:
             comtext = no comfile found
