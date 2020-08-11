@@ -14,7 +14,7 @@ from datetime import datetime
 from PIL import Image
 
 
-
+# remove this line for world peace
 
 #
 # get command line arguments
