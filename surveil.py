@@ -296,12 +296,22 @@ if __name__ == '__main__':
         # check and read command.txt file
         #
         
-        try:
-            with open("/home/pi/APP__surveillance/command.txt") as comfile:
-                comtext = comfile.read()
-        except FileNotFoundError:
-            comtext = None
+        # try:
+        #     with open("/home/pi/APP__surveillance/command.txt") as comfile:
+        #         comtext = comfile.read()
+        # except FileNotFoundError:
+        #     comtext = None
             
+        #
+        # check for command.txt file
+        #
+        
+        datafile="/home/pi/APP__surveillance/command.txt"
+        try:
+            with open(datafile) as f: print("Checking if command.txt exists")
+        except IOError as e:
+            print("Error: %s not found." % datafile)
+        
         #
         # read command.txt file
         #
