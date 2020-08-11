@@ -288,7 +288,25 @@ if __name__ == '__main__':
     while True:
 
 
-
+        #
+        # EXPERIMENTAL: find, read and process command.txt 
+        #
+        
+        #
+        # check for command.txt file
+        #
+        
+        #
+        # read command.txt file
+        #
+        
+        #
+        # process command.txt file
+        #
+        
+        #
+        # END EXPERIMENTAL
+        #
 
         #
         # get comparison image
