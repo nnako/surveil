@@ -44,6 +44,6 @@ def menu():
 		print("Program stopped!")
 		menu()
 
-#	if choice == "3":
-#		echo "this line was created via remote!" >> ./testfile.txt
+	if choice == "3":
+		echo "this line was created via remote!" >> ./testfile.txt
 menu()
