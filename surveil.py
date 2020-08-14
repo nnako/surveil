@@ -284,41 +284,36 @@ if __name__ == '__main__':
 
     # Reset last capture time
     lastCapture = time.time()
-
-    while True:
+    doloop = True
+    while doloop:
 
 
         #
-        # EXPERIMENTAL: find, read and process command.txt 
+        # EXPERIMENTAL: find, read, process and delete command.txt
         #
+
         datafile="/home/pi/APP__surveillance/command.txt"
 
         #
         # check for existence of command.txt file
         #
+
 	if os.path.isfile(datafile):
 
-        # try:
-        #     with open("/home/pi/APP__surveillance/command.txt") as comfile:
-        #         comtext = comfile.read()
-        # except FileNotFoundError:
-        #     comtext = None
-
         #
-        # check for command.txt file
+        # check, read, process and delete command.txt file
         #
 
-		with open(datafile,"r") as f:
-			print(f.read())
-        #
-        # read command.txt file
+		with open(datafile,"r") as f:		# open datafile
+			command = f.read()		# read data into variable
+			if command == "quit":		# if quit code received
+				doloop = False		# then init end of loop
+				os.remove(datafile)	# del datafile only if code executed
+	#
+	# this method works, but it seems to take some time to end the surveil program
         #
 
-        #
-        # process command.txt file
-        #
-
-        #
+	#
         # END EXPERIMENTAL
         #
 
