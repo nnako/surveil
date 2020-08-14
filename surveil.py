@@ -291,35 +291,33 @@ if __name__ == '__main__':
         #
         # EXPERIMENTAL: find, read and process command.txt 
         #
-        
+        datafile="/home/pi/APP__surveillance/command.txt"
+
         #
-        # check and read command.txt file
+        # check for existence of command.txt file
         #
-        
+	if os.path.isfile(datafile):
+
         # try:
         #     with open("/home/pi/APP__surveillance/command.txt") as comfile:
         #         comtext = comfile.read()
         # except FileNotFoundError:
         #     comtext = None
-            
+
         #
         # check for command.txt file
         #
-        
-        datafile="/home/pi/APP__surveillance/command.txt"
-        try:
-            with open(datafile) as f: print("Success: command.txt found.")
-        except IOError as e:
-            print("Error: %s not found." % datafile)
-        
+
+		with open(datafile,"r") as f:
+			print(f.read())
         #
         # read command.txt file
         #
-        
+
         #
         # process command.txt file
         #
-        
+
         #
         # END EXPERIMENTAL
         #
