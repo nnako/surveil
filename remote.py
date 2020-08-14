@@ -1,3 +1,5 @@
+import io
+
 #
 # this file displays a menu that allows to take control of the surveillance cam.
 # the user may choose what actions should take place.
@@ -24,8 +26,8 @@
 #
 
 def menu():
-	print("\nMake your choice: \n 1 - Start program \n 2 - Stop program \n 3 - Write text to testfile.txt \n")
-	choice = input()
+	print("\nMake your choice: \n 1 - Start program \n 2 - Stop program \n 3 - Write text to command.txt \n")
+	choice = str(input())
 
 	if choice == "1":
 		print("Program started!")
@@ -35,10 +37,10 @@ def menu():
 		print("Program stopped!")
 		menu()
 
-# At the moment, choices 1 and 2 do not seem to work: no text is printed on the screen.
 
 	if choice == "3":
-		echo "this line was created via remote!" >> ./testfile.txt
+		f = io.open("./command.txt","w")
+		f.write(u'This line was written from remote.py\n')
 		
 # At the moment the code above this line causes a syntax error. When typed directly in the terminal, it works!
 # (It then creates a text line in the testfile.)
