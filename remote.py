@@ -24,25 +24,46 @@ import io
 #
 # according to keystroke / input: generate file "command.txt" and write the code into it.
 #
+loop = True
+while loop:
 
-def menu():
-	print("\nMake your choice: \n 1 - Start program \n 2 - Stop program \n 3 - Quit surveillance \n")
-	choice = str(input())
+	def menu():
+		print("\nMake your choice:")
+		print("1 - Start program (Fake)")
+		print("2 - Stop program (Fake)")
+		print("3 - Quit surveillance")
+		print("4 - do something")
+		print("5 - do something")
+		print("6 - do something")
+		print("7 - do something")
+		print("8 - do something")
+		print("9 - do something")
+		print("0 - do something\n")
+		print("Q - Quit this program\n")
 
-	if choice == "1":
-		print("Program started!")
-		menu()
 
-	if choice == "2":
-		print("Program stopped!")
-		menu()
+		choice = str(input())
 
-	if choice == "3":
-		f = io.open("./command.txt","w")	# open command.txt file
-		f.write(u'quit')			# write code to command.txt
+		if choice == "1":
+			print("Surveillance started!")
+			menu()
 
-#
-# is it recommended to close the command.txt file after writing?
-#
+		if choice == "2":
+			print("Surveillance stopped!")
+			menu()
 
-menu()
+		if choice == "3":
+			f = io.open("./command.txt","w")	# open command.txt file
+			f.write(u'quit')					# write code to command.txt
+
+		if choice == "q":
+			print("Program stopped!")
+			loop = False
+
+	#
+	# when 'q' is pressed an erro occurs. NameError: name 'q' is not defined
+	# is it recommended to close the command.txt file after writing?
+	#
+
+	menu()
+print("Program stopped, really!")
