@@ -2,7 +2,7 @@
 
 
 
-import myconfig
+import importlib
 import argparse
 import StringIO
 import io
@@ -10,11 +10,18 @@ import picamera
 import subprocess
 import os
 import time
+import configparser
 from datetime import datetime
 from PIL import Image
 
 
-# remove this line for world peace
+
+
+#
+# static settings
+#
+
+PATH_TO_CONFIG_FILE = "./config.ini"
 
 
 
@@ -107,14 +114,6 @@ def parse_arguments():
 #
 
 def captureTestImage(camera):
-    # command = "raspistill -w %s -h %s -t 0 -e bmp -o -" % (100, 75)
-    # imageData = StringIO.StringIO()
-    # imageData.write(subprocess.check_output(command, shell=True))
-    # imageData.seek(0)
-    # im = Image.open(imageData)
-    # buffer = im.load()
-    # imageData.close()
-    # return im, buffer
 
     # get buffer
     imageData = io.BytesIO()
@@ -137,6 +136,7 @@ def captureTestImage(camera):
 #
 
 def saveImage(camera, width, height, diskSpaceToReserve):
+
     keepDiskSpaceFree(diskSpaceToReserve)
     time = datetime.now()
     filename = "capture-%04d%02d%02d-%02d%02d%02d.jpg" % (time.year, time.month, time.day, time.hour, time.minute, time.second)
@@ -155,6 +155,7 @@ def saveImage(camera, width, height, diskSpaceToReserve):
 #
 
 def saveVideo(camera, width, height, diskSpaceToReserve):
+
     keepDiskSpaceFree(diskSpaceToReserve)
     time = datetime.now()
     filename = "capture-%04d%02d%02d-%02d%02d%02d" % (time.year, time.month, time.day, time.hour, time.minute, time.second)
@@ -174,6 +175,7 @@ def saveVideo(camera, width, height, diskSpaceToReserve):
 #
 
 def keepDiskSpaceFree(bytesToReserve):
+
     if (getFreeSpace() < bytesToReserve):
         for filename in sorted(os.listdir(".")):
             if filename.startswith("capture") and filename.endswith(".jpg"):
@@ -190,9 +192,42 @@ def keepDiskSpaceFree(bytesToReserve):
 #
 
 def getFreeSpace():
+
     st = os.statvfs(".")
     du = st.f_bavail * st.f_frsize
     return du
+
+
+
+
+#
+# create local configuration file
+#
+
+def createSecretFile():
+
+    # very simple implementation of configuration file
+    # to avoid re-entering of access credentials each
+    # program start
+
+    # list of questions to be answered
+    lstQuestionsAndVariables = [
+            ['account name',          'EMAIL',     'test@gmx.de', ],
+            ['account password',      'PASSWORD',  'GEHEIMMMM', ],
+            ['from email',            'FROM',      'sender@email.de', ],
+            ['to email',              'TO',        'target@email.de', ],
+            ]
+
+    # output welcome message
+    print('[ INFO   : in order to create a configuration file, ]')
+    print('[ INFO   : please answer the following questions:   ]')
+    print('[ INFO   :                                          ]')
+
+    # loop over each question
+    for question in lstQuestions:
+
+        print(question[0] + ' [ ' + question[2] + ' ]:')
+        raw_input()
 
 
 
@@ -214,7 +249,31 @@ if __name__ == '__main__':
 
 
 
-    # init
+    #
+    # handle configuration files
+    #
+
+    # read general configuration file
+    config = configparser.ConfigParser()
+    config.read(PATH_TO_CONFIG_INI_FILE)
+
+    # create secret file if not already present
+    secretpath = config.get('general', 'PATH_TO_SECRET_FILE')
+    if not os.path.isfile(secretpath):
+        createSecretFile()
+
+    # read and decode secret file
+    _spec = importlib.util.spec_from_file_location('myconfig', secretpath)
+    _module = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_module)
+
+
+
+
+    #
+    # init camera
+    #
+
     camera = picamera.PiCamera()
 
 
