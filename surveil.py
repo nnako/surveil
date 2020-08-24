@@ -4,7 +4,6 @@
 
 import importlib
 import argparse
-import StringIO
 import io
 import picamera
 import subprocess
@@ -21,7 +20,7 @@ from PIL import Image
 # static settings
 #
 
-PATH_TO_CONFIG_FILE = "./config.ini"
+PATH_TO_CONFIG_INI_FILE = "./config.ini"
 
 
 
@@ -145,7 +144,7 @@ def saveImage(camera, width, height, diskSpaceToReserve):
     camera.resolution = (width, height)
     camera.capture(filename)
 
-    print "Captured %s" % filename
+    print("Captured %s" % filename)
 
 
 
@@ -180,7 +179,7 @@ def keepDiskSpaceFree(bytesToReserve):
         for filename in sorted(os.listdir(".")):
             if filename.startswith("capture") and filename.endswith(".jpg"):
                 os.remove(filename)
-                print "Deleted %s to avoid filling disk" % filename
+                print("Deleted %s to avoid filling disk" % filename)
                 if (getFreeSpace() > bytesToReserve):
                     return
 
@@ -212,8 +211,10 @@ def createSecretFile():
 
     # list of questions to be answered
     lstQuestionsAndVariables = [
+            ['smtp server',           'SERVER',    'smtp.gmx.de:587', ],
             ['account name',          'EMAIL',     'test@gmx.de', ],
             ['account password',      'PASSWORD',  'GEHEIMMMM', ],
+            ['email subject',         'SUBJECT',   'TEST-BETREFF', ],
             ['from email',            'FROM',      'sender@email.de', ],
             ['to email',              'TO',        'target@email.de', ],
             ]
@@ -224,10 +225,13 @@ def createSecretFile():
     print('[ INFO   :                                          ]')
 
     # loop over each question
-    for question in lstQuestions:
+    ret = []
+    for _i, question in enumerate(lstQuestionsAndVariables):
 
-        print(question[0] + ' [ ' + question[2] + ' ]:')
-        raw_input()
+        print(question[0] + ' [ ' + question[2] + ' ] : ', end='')
+        ret.append("%s = '%s'" % (question[1], input()))
+
+    return ret
 
 
 
@@ -260,12 +264,18 @@ if __name__ == '__main__':
     # create secret file if not already present
     secretpath = config.get('general', 'PATH_TO_SECRET_FILE')
     if not os.path.isfile(secretpath):
-        createSecretFile()
+
+        # ask user for ingredients
+        lstTextRows = createSecretFile()
+
+        # save secret file
+        with open(os.path.abspath(secretpath), 'w') as _file:
+            _file.write('\n'.join(lstTextRows))
 
     # read and decode secret file
-    _spec = importlib.util.spec_from_file_location('myconfig', secretpath)
-    _module = importlib.util.module_from_spec(_spec)
-    _spec.loader.exec_module(_module)
+    #_modulepath = os.path.abspath(secretpath).rsplit('.', 1)[0][1:].replace('/', '.')
+    _modulepath = secretpath.rsplit('.', 1)[0].replace('/', '.')
+    myconfig = importlib.import_module(_modulepath)
 
 
 
@@ -406,8 +416,8 @@ if __name__ == '__main__':
         #
 
         changedPixels = 0
-        for x in xrange(0, 100):
-            for y in xrange(0, 75):
+        for x in range(0, 100):
+            for y in range(0, 75):
 
                 # Just check green channel as it's the highest quality channel
                 pixdiff = abs(buffer1[x,y][1] - buffer2[x,y][1])
@@ -487,12 +497,12 @@ if __name__ == '__main__':
 
                     # send email
                     _cmd = 'echo \'siehe Aufzeichnung...\' | sendemail' \
-                            + ' -f '+myconfig.FROM \
-                            + ' -t '+myconfig.TO \
-                            + ' -u "Bewegung in Werkstatt"' \
-                            + ' -s smtp.gmx.de:587' \
-                            + ' -xu '+myconfig.EMAIL \
-                            + ' -xp '+myconfig.PASSWORD \
+                            + ' -f '  + myconfig.FROM \
+                            + ' -t '  + myconfig.TO \
+                            + ' -u '  + myconfig.SUBJECT \
+                            + ' -s '  + myconfig.SERVER \
+                            + ' -xu ' + myconfig.EMAIL \
+                            + ' -xp ' + myconfig.PASSWORD \
                             + ' -o tls=yes' \
                             + ' -a /home/pi/APP__surveillance/capture*'
                     subprocess.call([ _cmd ], shell=True)
