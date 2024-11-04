@@ -2,15 +2,23 @@
 
 
 
+
+#
+# imports
+#
+
+# built-in
 import importlib
 import argparse
 import io
-import picamera
 import subprocess
 import os
 import time
 import configparser
 from datetime import datetime
+
+# application
+import picamera
 from PIL import Image
 
 
